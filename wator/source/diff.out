@@ -1,0 +1,289 @@
+0a1,22
+> /*
+>  MASS C++ Software License
+>  © 2014-2015 University of Washington
+>  Permission is hereby granted, free of charge, to any person obtaining a copy
+>  of this software and associated documentation files (the "Software"), to deal
+>  in the Software without restriction, including without limitation the rights
+>  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+>  copies of the Software, and to permit persons to whom the Software is
+>  furnished to do so, subject to the following conditions:
+>  The above copyright notice and this permission notice shall be included in
+>  all copies or substantial portions of the Software.
+>  The following acknowledgment shall be used where appropriate in publications, presentations, etc.:
+>  © 2014-2015 University of Washington. MASS was developed by Computing and Software Systems at University of Washington Bothell.
+>  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+>  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+>  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+>  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+>  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+>  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+>  THE SOFTWARE.
+>  */
+> 
+13,22c35
+< /**
+<  * 
+<  * @param handle
+<  * @param className
+<  * @param boundary_width
+<  * @param argument
+<  * @param argument_size
+<  * @param dim
+<  * @param size
+<  */
+---
+> 
+51,53d63
+< /**
+<  * 
+<  */
+71,75d80
+< /**
+<  * 
+<  * @param argument
+<  * @param argument_size
+<  */
+196,199c201,205
+< /** @brief Converts a given plain single index into a multi-dimensional index.
+<   *  @param[in] singleIndex an index in a plain single dimesion that will be
+<    *                        converted in a multi-dimensional index.
+<    * @return a multi-dimensional index			   
+---
+> /*! @brief Converts a given plain single index into a multi-dimensional index.
+> 
+>     @param[in] singleIndex an index in a plain single dimesion that will be
+>                            converted in a multi-dimensional index.
+>     @return a multi-dimensional index			   
+215,220d220
+< /**
+<  * 
+<  * @param functionId
+<  * @param argument
+<  * @param tid
+<  */
+250,258d249
+< /**
+<  * 
+<  * @param functionId
+<  * @param argument
+<  * @param arg_size
+<  * @param ret_size
+<  * @param tid
+<  * @return 
+<  */
+293,298c284,289
+< /** @brief Returns the first and last of the range that should be allocated
+<   *        to a given thread
+<   *
+<   *  @param[i] tid an id of the thread that calls this function.
+<   *  @return an array of two integers: element 0 = the first and 
+<   *           element 1 = the last
+---
+> /*! @brief Returns the first and last of the range that should be allocated
+>            to a given thread
+> 
+>      @param[i] tid an id of the thread that calls this function.
+>      @return an array of two integers: element 0 = the first and 
+>              element 1 = the last
+336,342d326
+< /**
+<  * 
+<  * @param dstPlaces
+<  * @param functionId
+<  * @param destinations
+<  * @param tid
+<  */
+531,535d514
+< /**
+<  * 
+<  * @param param
+<  * @return 
+<  */
+724,728d702
+< /**
+<  * 
+<  * @param param
+<  * @return NULL
+<  */
+736,738d709
+< /**
+<  * 
+<  */
+759c730
+<     param[0][2] = places_size; // upper_boundary - lower_boundary + 1
+---
+>     param[0][2] = places_size;
+774c745
+<     param[1][2] = places_size; // upper_boundary - lower_boundary + 1
+---
+>     param[1][2] = places_size;
+797,801d767
+< /**
+<  * 
+<  * @param param
+<  * @return 
+<  */
+823,828c789,790
+<     dllclass->places :                                // left boundary top
+<     dllclass->places + ( places_size - shadow_size ); // right boundary top
+< 
+<   Place **shadow = ( direction == 'L' ) ?
+<     dllclass->left_shadow :                           // left shadow top
+<     dllclass->right_shadow;                           // right shadow top
+---
+>     dllclass->places : 
+>     dllclass->places + ( places_size - shadow_size );
+830c792
+<   // allocate an outBuffer to contain all outMessages in this boundary
+---
+>   // allocate a buffer to contain all outMessages in this boundary
+832,842c794,795
+<   int outBuffer_size = shadow_size * outMessage_size;
+< 
+<   // allocate an inBuffer to contain all inMessage[3]s if direction=='L'
+<   // or to contain all inMessage[1]s if direction=='R'
+<   int inMessage_size = boundary[0]->inMessage_size;
+<   int inBuffer_size = shadow_size * inMessage_size;
+< 
+<   // allocate an outBuffer/inBuffer-combined continguous buffer
+<   char *buffer = (char *)( malloc( outBuffer_size + inBuffer_size ) );
+<   char *outBuffer = buffer;
+<   char *inBuffer = buffer + outBuffer_size;
+---
+>   int buffer_size = shadow_size * outMessage_size;
+>   char *buffer = (char *)( malloc( buffer_size ) );
+844,845c797,798
+<   // copy all the outMessages into the outBuffer
+<   char *pos = outBuffer; // we shouldn't change the outBuffer pointer.
+---
+>   // copy all the outMessages into the buffer
+>   char *pos = buffer; // we shouldn't change the buffer pointer.
+847,852d799
+<     if ( printOutput == true ) {
+<       convert.str( "" );
+<       convert << "boundary[" << i << "] = " << boundary[i];
+<       convert << " outMessage = " << boundary[i]->outMessage;
+<       MASS_base::log( convert.str( ) );
+<     }
+857,873d803
+<   // copy all the inMessages into the outBuffer
+<   pos = inBuffer; // we shouldn't change the inBuffer pointer.
+<   for ( int i = 0; i < shadow_size; i++ ) {
+<     if ( printOutput == true ) {
+<       convert.str( "" );
+<       convert << "shadow[" << i << "] = " << shadow[i];
+<       convert << " inMessages = " << shadow[i]->inMessages.size( );
+<       MASS_base::log( convert.str( ) ) ;
+<     }
+<     if ( ( direction == 'L' && shadow[i]->inMessages.size( ) >= 4 ) ||
+< 	 ( direction == 'R' && shadow[i]->inMessages.size( ) >= 1 ) ) {
+<       memcpy( pos, shadow[i]->inMessages[ (direction == 'L' ) ? 3 : 1 ], 
+< 	      inMessage_size );
+<       pos += inMessage_size;
+<     }
+<   }
+< 
+879d808
+< 	    << ", inMessage_size = " << inMessage_size
+881,882c810
+<     pos = outBuffer;
+<     convert << "outBuffer: ";
+---
+>     pos = buffer;
+884c812
+<       convert << *(int *)pos << " " << endl;
+---
+>       convert << *(int *)pos << endl;
+887,892d814
+<     pos = inBuffer;
+<     convert << "inBuffer: ";
+<     for ( int i = 0; i < shadow_size; i++ ) {
+<       convert << *(int *)pos << " " << endl;
+<       pos += inMessage_size;
+<     }
+899c821
+< 		 buffer, outBuffer_size + inBuffer_size );
+---
+> 		 buffer, buffer_size );
+949,950c871
+<   outBuffer = 0;
+<   inBuffer = 0;
+---
+>   buffer = 0;
+954,955c875,876
+<   // extract the message received and copy it to the corresponding shadow.
+<   shadow = ( direction == 'L' ) ? 
+---
+>   // extract the message reeived and copy it to the corresponding shadow.
+>   Place **shadow = ( direction == 'L' ) ? 
+957,963c878
+<   outBuffer = (char *)( messageFromDest->getArgumentPointer( ) );
+< 
+<   // extract the message received and copy it to the corresponding boundary.
+<   boundary = ( direction == 'L' ) ? 
+<     dllclass->places :                                // left boundary top
+<     dllclass->places + ( places_size - shadow_size ); // right boundary top
+<   inBuffer = outBuffer + outBuffer_size;
+---
+>   buffer = (char *)( messageFromDest->getArgumentPointer( ) );
+964a880
+>   // copy the buffer contents into the corresponding shadow
+966d881
+<     // copy the outBuffer contents into the corresponding shadow
+972,987c887
+<     memcpy( shadow[i]->outMessage, outBuffer, outMessage_size );
+< 
+<     // copy the inBuffer contents into the corresponding boundary
+<     int position = ( direction == 'L' ) ? 3 : 1;
+<     /* at present, no automatic inMessage space allocation. 
+<        a user must allocate inMessage space if they want to send it.
+<     for ( int j = 0; j < 4; j++ )
+<       if ( int( boundary[i]->inMessages.size( ) )
+< 	   <= j  && inMessage_size > 0 )
+< 	boundary[i]->inMessages.push_back( malloc( inMessage_size ) );
+<     */
+<     if ( position < int( boundary[i]->inMessages.size( ) ) )
+<       memcpy( boundary[i]->inMessages[ position ], inBuffer,
+< 	      inMessage_size );
+< 
+<     // check the contents
+---
+>     memcpy( shadow[i]->outMessage, buffer, outMessage_size );
+994,999c894
+< 	      << ", outBuffer = " << *(int *)outBuffer
+< 	      << ", boundary[" << i << "]->inMessages[" 
+< 	      << position << "] = " 
+< 	      << ( ( boundary[i]->inMessages.size( ) > (unsigned int)position ) ? 
+< 		   boundary[i]->inMessages[position] : 0 )
+< 	      << ", inBuffer = " << *(int *)inBuffer
+---
+> 	      << ", buffer = " << *(int *)buffer
+1003,1004c898
+<     outBuffer += outMessage_size;
+<     inBuffer += inMessage_size;
+---
+>     buffer += outMessage_size;
+1014,1021d907
+< /**
+<  * 
+<  * @param src_index
+<  * @param offset
+<  * @param dst_size
+<  * @param dest_dimension
+<  * @param dest_index
+<  */
+1041,1047d926
+< /**
+<  * 
+<  * @param index
+<  * @param size
+<  * @param dimension
+<  * @return 
+<  */
+1067,1071d945
+< /**
+<  * 
+<  * @param globalLinearIndex
+<  * @return 
+<  */
